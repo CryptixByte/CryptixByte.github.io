@@ -13,7 +13,6 @@ body {
 .navbar-right {
   display: flex;
   gap: 2rem;
-  margin-right: 2rem;
 }
 
 .navbar-left {
