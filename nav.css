@@ -7,8 +7,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 50px;
-  padding-top: 50px;
+  margin-top: 25px;
+  padding-top: 25px;
   padding-left: 6rem;
   padding-right: 4rem;
 }
