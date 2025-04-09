@@ -19,7 +19,6 @@ body {
 .navbar-left {
   display: flex;
   gap: 2rem;
-  margin-left: auto;
 }
 
 
