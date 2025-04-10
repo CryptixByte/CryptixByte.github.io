@@ -32,7 +32,7 @@ body {
 }
 
 .nav-link:visited {
-  color: pink;
+  color: black;
   background-color: transparent;
   text-decoration: none;
 }
@@ -40,7 +40,7 @@ body {
 .nav-link:hover {
   color: red;
   background-color: transparent;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .nav-link:active {
