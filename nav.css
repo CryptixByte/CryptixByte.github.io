@@ -1,7 +1,6 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  font-weight: 700;
 }
 
 .navbar {
@@ -20,6 +19,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .navbar-right {
