@@ -25,22 +25,9 @@
   gap: 2rem;
 }
 
-.github-icon {
-  width: 45px;
-  height: 45px;
-  object-fit: contain;
-  transition: transform 0.2s ease;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.github-icon-hover {
-  transform: scale(1.1);
-}
-
 .navbar-left {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .nav-link:link {
