@@ -9,6 +9,7 @@ html, body {
   top: 0;
   z-index: 1000;
   background-color: gray;
+  box-sizing: border-box;
 }
 
 .navbar-content {
