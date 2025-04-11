@@ -8,7 +8,7 @@ body {
   top: 0;
   z-index: 1000;
   background-color: gray;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
   padding: 12px 0;
 }
 
@@ -21,7 +21,7 @@ body {
   align-items: center;
   font-weight: bold;
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 18;
+  font-size: 24;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
