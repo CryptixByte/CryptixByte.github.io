@@ -60,9 +60,9 @@ body {
 }
 
 .nav-link:active {
-  color: yellow;
+  color: red;
   background-color: transparent;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 
