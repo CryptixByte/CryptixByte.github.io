@@ -12,7 +12,7 @@ body {
   padding-top: 25px;
   padding-left: 6rem;
   padding-right: 4rem;
-  background-color: #1e1e1e
+  background-color: gray;
 }
 
 .navbar-right {
@@ -21,8 +21,8 @@ body {
 }
 
 .github-icon {
-  width: 24px;
-  height: 24px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
   transition: transform 0.2s ease;
   display: inline-block;
