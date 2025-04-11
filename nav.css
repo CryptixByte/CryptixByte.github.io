@@ -3,7 +3,6 @@
   top: 0;
   z-index: 1000;
   background-color: gray;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 .navbar-content {
@@ -19,12 +18,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.navbar-right {
-  display: flex;
-  gap: 2rem;
-}
-
-.navbar-left {
+.navbar-right, .navbar-left {
   display: flex;
   gap: 2rem;
 }
