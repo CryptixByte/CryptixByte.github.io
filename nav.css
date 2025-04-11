@@ -2,7 +2,6 @@ body {
   margin: 0;
   font-family: sans-serif;
   font-weight: 700;
-   
 }
 
 .navbar {
@@ -19,6 +18,12 @@ body {
 .navbar-right {
   display: flex;
   gap: 2rem;
+}
+
+.github-icon {
+  width: 24;
+  height: 24;
+  transition: transform 0.2 ease;
 }
 
 .navbar-left {
