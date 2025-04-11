@@ -25,6 +25,8 @@ body {
   height: 24px;
   object-fit: contain;
   transition: transform 0.2s ease;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .github-icon-hover {
