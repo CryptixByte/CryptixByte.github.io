@@ -5,12 +5,17 @@ body {
 }
 
 .navbar {
+  background-color: gray;
+  padding: 25px 0;
+}
+
+.navbar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 25px;
-  padding: 25px 4rem 25px 6rem;
-  background-color: gray;
 }
 
 .navbar-right {
