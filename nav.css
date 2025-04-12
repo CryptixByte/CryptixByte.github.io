@@ -14,7 +14,7 @@ html, body {
 }
 
 .navbar-content {
-  max-width: 2400px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
