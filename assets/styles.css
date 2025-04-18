@@ -36,10 +36,6 @@
   background-color: #30292a;
 }
 
-.contact-format {
-
-}
-
 .contact-background {
   background-color: #30292a;
 }
@@ -51,3 +47,47 @@
 .end-background {
   background-color: #30292a;
 }
+
+.navbar {
+   position: sticky;
+   display: flex;
+   top: 0;
+   z-index: 1000;
+   background-color: #423f3e;
+   padding: 1rem 0;
+ }
+
+ .navbar-content {
+   padding: 0 2rem;
+   justify-content: flex-start;
+   gap: 1rem;
+   align-items: center;
+   font-weight: bold;
+   font-family: 'Helvetica Neue', sans-serif;
+   font-size: 16px;
+   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+ }
+ 
+ .nav-link:link {
+   color: black;
+   background-color: transparent;
+   text-decoration: none;
+ }
+ 
+ .nav-link:visited {
+   color: black;
+   background-color: transparent;
+   text-decoration: none;
+ }
+ 
+ .nav-link:hover {
+   color: red;
+   background-color: transparent;
+   text-decoration: none;
+ }
+ 
+ .nav-link:active {
+   color: red;
+   background-color: transparent;
+   text-decoration: none;
+ }
