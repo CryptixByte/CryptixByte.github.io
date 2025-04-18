@@ -4,8 +4,8 @@
   box-sizing: border-box;
 }
 
-.home-format {
-
+.home {
+  background-color: #30292a;
 }
 
 .home-background {
@@ -49,12 +49,13 @@
 }
 
 .navbar {
-   position: sticky;
-   display: flex;
-   top: 0;
-   z-index: 1000;
-   background-color: #423f3e;
-   padding: 1rem 0;
+  position: sticky;
+  display: flex;
+  top: 0;
+  z-index: 1000;
+  background-color: #423f3e;
+  border-bottom: #fd2f4d; 
+  padding: 1rem 0;
  }
 
  .navbar-content {
