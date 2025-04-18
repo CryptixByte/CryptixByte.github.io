@@ -15,7 +15,7 @@ html, body {
 }
 
 .navbar-sticky {
-
+  position: sticky;
 }
 
 .navbar-content {
