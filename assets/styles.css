@@ -61,12 +61,6 @@
   align-items: center;
  }
 
- .navbar-content {
-   justify-content: flex-start;
-   font-weight: bold;
-   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
- }
- 
  .nav-link:link {
    color: white;
    background-color: transparent;
