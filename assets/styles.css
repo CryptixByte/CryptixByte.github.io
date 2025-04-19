@@ -57,15 +57,13 @@
   border-bottom: 4px solid #ea3a3a; 
   padding: 1rem 0;
   font-size: 16px;
+  font-family: 'Helvetica Neue', sans-serif;
   align-items: center;
  }
 
  .navbar-content {
-   padding: 0 2rem;
    justify-content: flex-start;
-   gap: 1rem;
    font-weight: bold;
-   font-family: 'Helvetica Neue', sans-serif;
    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
  }
  
