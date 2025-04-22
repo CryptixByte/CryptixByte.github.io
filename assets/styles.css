@@ -53,8 +53,8 @@
   display: flex;
   top: 0;
   z-index: 1;
-  background-color: #cc2e2e;
-  border-bottom: 4px solid #ea3a3a; 
+  background-color: #1b1919;
+  border-bottom: 4px solid #cc2e2e; 
   padding: 1rem 2rem;
  }
 
