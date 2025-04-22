@@ -4,11 +4,6 @@
   box-sizing: border-box;
 }
 
-ul {
-  display: flex;
-  gap: 1rem;
-}
-
 .home {
   background-color: #30292a;
 }
@@ -66,6 +61,11 @@ ul {
   font-weight: bold;
   align-items: center;
  }
+
+.navbar-content {
+  display: flex;
+  gap: 1rem;
+}
 
  .nav-link:link {
    color: white;
