@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+ul {
+  display: flex;
+  gap: 1rem;
+}
+
 .home {
   background-color: #30292a;
 }
