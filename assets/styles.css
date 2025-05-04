@@ -12,12 +12,28 @@
   background-color: #353535;
 }
 
+.dark .home-format {
+
+}
+
+.dark .home-background {
+
+}
+
 .about-format {
 
 }
 
 .about-background {
   background-color: #30292a;
+}
+
+.dark .about-format {
+
+}
+
+.dark .about-background {
+
 }
 
 .projects-format {
@@ -28,6 +44,14 @@
   background-color: #30292a;
 }
 
+.dark .projects-format {
+
+}
+
+.dark .projects-background {
+
+}
+
 .extras-format {
 
 }
@@ -36,7 +60,27 @@
   background-color: #30292a;
 }
 
+.dark .extras-format {
+
+}
+
+.dark .extras-background {
+
+}
+
+.contact-format {
+
+}
+
 .contact-background {
+  background-color: #30292a;
+}
+
+.dark .contact-format {
+
+}
+
+.dark .contact-background {
   background-color: #30292a;
 }
 
@@ -50,6 +94,19 @@
 }
 
 .end-background {
+  background-color: #30292a;
+}
+
+.dark .end-format {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  color: white;
+}
+
+.dark .end-background {
   background-color: #30292a;
 }
 
