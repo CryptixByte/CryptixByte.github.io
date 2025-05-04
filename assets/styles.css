@@ -3,7 +3,7 @@
   margin: 0;
   box-sizing: border-box;
 }
-
+<!-- Home Section -->
 .home {
   
 }
@@ -20,6 +20,7 @@
   background-color: #30292a;
 }
 
+<!-- About Section -->
 .about-format {
 
 }
@@ -36,6 +37,7 @@
   background-color: #30292a;
 }
 
+<!-- Project Section -->
 .projects-format {
 
 }
@@ -52,6 +54,7 @@
   background-color: #30292a;
 }
 
+<!-- Extras Section -->
 .extras-format {
 
 }
