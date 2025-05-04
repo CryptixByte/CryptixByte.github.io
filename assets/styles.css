@@ -17,7 +17,7 @@
 }
 
 .dark .home-background {
-
+  background-color: #30292a;
 }
 
 .about-format {
@@ -33,7 +33,7 @@
 }
 
 .dark .about-background {
-
+  background-color: #30292a;
 }
 
 .projects-format {
@@ -49,7 +49,7 @@
 }
 
 .dark .projects-background {
-
+  background-color: #30292a;
 }
 
 .extras-format {
@@ -65,7 +65,7 @@
 }
 
 .dark .extras-background {
-
+  background-color: #30292a;
 }
 
 .contact-format {
@@ -148,6 +148,49 @@
  }
  
  .nav-link:active {
+   color: red;
+   background-color: transparent;
+   text-decoration: none;
+ }
+
+.dark .navbar {
+  position: sticky;
+  display: flex;
+  top: 0;
+  z-index: 1;
+  background-color: #1b1919;
+  border-bottom: 4px solid #cc2e2e; 
+  padding: 1rem 2rem;
+ }
+
+.dark .navbar-content {
+  display: flex;
+  gap: 1rem;
+  font-size: 18px;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: bold;
+  align-items: center;
+}
+
+ .dark .nav-link:link {
+   color: white;
+   background-color: transparent;
+   text-decoration: none;
+ }
+ 
+ .dark .nav-link:visited {
+   color: white;
+   background-color: transparent;
+   text-decoration: none;
+ }
+ 
+ .dark .nav-link:hover {
+   color: red;
+   background-color: transparent;
+   text-decoration: none;
+ }
+ 
+ .dark .nav-link:active {
    color: red;
    background-color: transparent;
    text-decoration: none;
