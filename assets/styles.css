@@ -122,7 +122,7 @@
   display: flex;
   top: 0;
   z-index: 1;
-  background-color: white;
+  background-color: gray;
   border-bottom: 6px solid black; 
   padding: 1rem 2rem;
  }
