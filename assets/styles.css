@@ -71,6 +71,7 @@
   background-color: #30292a;
 }
 
+<!-- Contact Section -->
 .contact-format {
 
 }
@@ -87,6 +88,7 @@
   background-color: #30292a;
 }
 
+<!-- End Section -->
 .end-format {
   display: flex;
   justify-content: center;
@@ -113,13 +115,14 @@
   background-color: #30292a;
 }
 
+<!-- Navbar Section -->
 .navbar {
   position: sticky;
   display: flex;
   top: 0;
   z-index: 1;
-  background-color: #1b1919;
-  border-bottom: 4px solid #cc2e2e; 
+  background-color: white;
+  border-bottom: 4px solid black; 
   padding: 1rem 2rem;
  }
 
@@ -133,25 +136,25 @@
 }
 
  .nav-link:link {
-   color: white;
+   color: black;
    background-color: transparent;
    text-decoration: none;
  }
  
  .nav-link:visited {
-   color: white;
+   color: black;
    background-color: transparent;
    text-decoration: none;
  }
  
  .nav-link:hover {
-   color: red;
+   color: grey;
    background-color: transparent;
    text-decoration: none;
  }
  
  .nav-link:active {
-   color: red;
+   color: grey;
    background-color: transparent;
    text-decoration: none;
  }
