@@ -1,62 +1,564 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="assets/styles.css">
-  <title>Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marc Stearns — Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oxanium:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020408;
+    --surface: #080d14;
+    --border: #0d2137;
+    --accent: #00f0ff;
+    --accent2: #ff3e6c;
+    --text: #c8e0f0;
+    --muted: #3a5570;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Oxanium', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 240, 255, 0.015) 2px,
+      rgba(0, 240, 255, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* Grid bg */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: rgba(2,4,8,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 60px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content { max-width: 800px; }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .hero-tag::before { content: '> '; }
+
+  h1 {
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.4s;
+  }
+
+  .name-line { color: var(--text); }
+  .role-line { color: var(--accent); }
+  .role-line span { color: var(--accent2); }
+
+  .hero-desc {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 540px;
+    margin: 32px 0 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.6s;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    padding: 14px 32px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    padding: 13px 32px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover { background: rgba(0,240,255,0.1); transform: translateY(-2px); }
+
+  /* Glitch decoration */
+  .hero-decoration {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+    opacity: 0.4;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 100px 60px;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-label::before { content: '// '; }
+
+  h2 {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    color: var(--text);
+  }
+
+  h2 span { color: var(--accent); }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.3s;
+  }
+
+  .project-card:hover { background: #0a1520; border-color: var(--accent); }
+  .project-card:hover::before { height: 100%; }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .project-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .project-desc {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    letter-spacing: 1px;
+  }
+
+  .project-link {
+    position: absolute;
+    bottom: 36px; right: 36px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: color 0.2s;
+  }
+
+  .project-link:hover { color: var(--accent); }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .skill-item {
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .skill-item:hover { border-color: var(--accent); }
+
+  .skill-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .skill-bar {
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    animation: expand 1s ease forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  @keyframes expand { to { transform: scaleX(1); } }
+
+  /* CONTACT */
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .contact-inner { grid-template-columns: 1fr; }
+    nav { padding: 20px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    section { padding: 60px 24px; }
+    .hero-decoration { display: none; }
+  }
+
+  .contact-desc {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  .contact-links { display: flex; flex-direction: column; gap: 16px; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover { border-color: var(--accent); background: rgba(0,240,255,0.04); }
+
+  .contact-link-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  .contact-link-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 32px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cursor blink */
+  .cursor::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+    color: var(--accent);
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+</style>
 </head>
-
 <body>
-<div class="home-background">
-  <section id="home" style="min-height: 100vh;">
-    <h2>Hello, My Name Is Marc S</h2>
-    <p>Future Stuff</p>
-  </section>
-</div>
 
-<nav class="navbar">
-  <div class="navbar-content">
-    <a href="#home" class="nav-link">Home</a>
-    <a href="#about" class="nav-link">About</a>
-    <a href="#projects" class="nav-link">Projects</a>
-    <a href="#contact" class="nav-link">Contact Me</a>
- </div>
+<nav>
+  <div class="nav-logo">Marc Stearns.exe</div>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#projects">PROJECTS</a></li>
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
 </nav>
 
-<div class="about-background">
-  <section id="about" style="min-height: 100vh;">
-    <h2>About Me</h2>
-    <p>Blah blah...</p>
-  </section>
-</div>
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">JUNIOR SECURITY DEVELOPER</div>
+    <h1>
+      <div class="name-line">MARC</div>
+      <div class="role-line">STEARNS<span>.</span></div>
+    </h1>
+    <p class="hero-desc">
+      AAS Cybersecurity · B.S. Computer Science in progres — building tools that protect, encrypt, and automate.<br>
+      GlyphLock · Twitch Bot · Dividend Tracker · Always building something new<span class="cursor"></span>
+    </p>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn-primary">VIEW PROJECTS</a>
+      <a href="#contact" class="btn-ghost">HIRE ME</a>
+    </div>
+  </div>
+  <div class="hero-decoration">
+    <div>01001000 01000101 01001100</div>
+    <div>01001100 01001111 00100000</div>
+    <div>ENCRYPTION_STATUS: ACTIVE</div>
+    <div>THREAT_LEVEL: MINIMAL</div>
+    <div>FIREWALL: ONLINE</div>
+    <div>PROJECTS_DEPLOYED: 3</div>
+  </div>
+</section>
 
-<div class="projects-background">
-  <section id="projects" style="min-height: 100vh;">
-    <h2>Projects</h2>
-    <p>Cool stuff here...</p>
-  </section>
-</div>
+<section id="about">
+  <div class="section-label">ABOUT</div>
+  <h2>WHO AM I<span>?</span></h2>
+  <p style="font-family:var(--mono);font-size:14px;color:var(--muted);line-height:2;max-width:640px">
+    Cybersecurity graduate with a passion for building real tools — not just theory.<br><br>
+    I built GlyphLock, an encryption tool. I built a Twitch chat bot for streamers. I built a live dividend portfolio tracker. Everything I make solves a real problem.<br><br>
+    Currently looking for my first role in cybersecurity. Available immediately.
+  </p>
+</section>
 
-<div class="extras-background">
-  <section id="extras">
-    <h2>Extra Section</h2>
-    <p>Coming Soon</p>
-  </section>
-</div>
+<section id="projects">
+  <div class="section-label">PROJECTS</div>
+  <h2>WHAT I'VE <span>BUILT</span></h2>
+  <div class="projects-grid">
 
-<div class="contact-background"> 
-  <section id="contact" style="min-height: 100vh;">
-    <h2>Contact Me</h2>
-    <p>Let’s talk...</p>
-  </section>
-</div>
+    <div class="project-card">
+      <div class="project-num">01 / SECURITY</div>
+      <div class="project-name">GlyphLock</div>
+      <p class="project-desc">An encryption-based tool for securing data. Built with a focus on real-world cryptography principles learned through my cybersecurity degree.</p>
+      <div class="project-tags">
+        <span class="tag">ENCRYPTION</span>
+        <span class="tag">SECURITY</span>
+        <span class="tag">JAVASCRIPT</span>
+      </div>
+      <a href="https://github.com/CryptixByte/glyphLock-CPP" target="_blank" class="project-link">VIEW →</a>
+    </div>
 
-<div class="end-background">
-  <section id="end">
-    <div class="end-format">
-      <h2>Marc Stearns ©2025</h2>
-      <p>Icons go here</p>  
-    </div> 
-  </section>
-</div>
+    <div class="project-card">
+      <div class="project-num">02 / AUTOMATION</div>
+      <div class="project-name">Twitch Chat Bot</div>
+      <p class="project-desc">A fully featured chat bot for Twitch streamers. Handles moderation, commands, and real-time stream interaction via the Twitch API.</p>
+      <div class="project-tags">
+        <span class="tag">API</span>
+        <span class="tag">REAL-TIME</span>
+        <span class="tag">BOT</span>
+      </div>
+      <a href="https://github.com/CryptixByte/eclipsetwitchbot" target="_blank" class="project-link">VIEW →</a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">03 / FINTECH</div>
+      <div class="project-name">Dividend Tracker</div>
+      <p class="project-desc">A live dividend portfolio tracker with real-time price fetching, DRIP projections, goal tracking, and a clean config-driven architecture.</p>
+      <div class="project-tags">
+        <span class="tag">FINANCE</span>
+        <span class="tag">LIVE API</span>
+        <span class="tag">HTML/JS</span>
+      </div>
+      <a href="https://github.com/YOURUSERNAME/dividend-tracker" target="_blank" class="project-link">VIEW →</a>
+    </div>
+
+  </div>
+  
+</section>
+
+<section id="skills">
+  <div class="section-label">SKILLS</div>
+  <h2>TECH <span>STACK</span></h2>
+  <div class="skills-grid">
+    <div class="skill-item"><div class="skill-name">JavaScript / HTML / CSS</div><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div></div>
+    <div class="skill-item"><div class="skill-name">Network Security</div><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+    <div class="skill-item"><div class="skill-name">Cryptography</div><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+    <div class="skill-item"><div class="skill-name">Python</div><div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div></div>
+    <div class="skill-item"><div class="skill-name">API Integration</div><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+    <div class="skill-item"><div class="skill-name">Linux / CLI</div><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">CONTACT</div>
+  <h2>LET'S <span>TALK</span></h2>
+  <div class="contact-inner">
+    <p class="contact-desc">
+      Open to cybersecurity roles, freelance projects, and collaboration.<br><br>
+      AAS Cybersecurity · B.S. Computer Science in progress · Available immediately · Based in [YOUR CITY]
+    </p>
+    <div class="contact-links">
+      <a href="https://github.com/CryptixByte" target="_blank" class="contact-link">
+        <div><div class="contact-link-label">GITHUB</div><div class="contact-link-value">github.com/CryptixByte</div></div>
+      </a>
+      <a href="mailto:mstearns.dev@gmail.com" class="contact-link">
+        <div><div class="contact-link-label">EMAIL</div><div class="contact-link-value">mstearns.dev@gmail.com</div></div>
+      </a>
+      <a href="https://www.linkedin.com/in/marc-stearns-638b08311/" target="_blank" class="contact-link">
+        <div><div class="contact-link-label">LINKEDIN</div><div class="contact-link-value">linkedin.com/in/marc-stearns-638b08311</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Marc Stearns</span>
+  <span>CYBERSECURITY · DEVELOPER · BUILDER</span>
+</footer>
+
 </body>
+</html>
 
 
