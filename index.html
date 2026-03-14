@@ -354,12 +354,32 @@
     align-items: start;
   }
 
-  @media (max-width: 768px) {
-    .contact-inner { grid-template-columns: 1fr; }
-    nav { padding: 20px 24px; }
-    .hero { padding: 100px 24px 60px; }
-    section { padding: 60px 24px; }
+  @media (max-width: 900px) {
+    nav { padding: 16px 32px; }
+    .hero { padding: 110px 32px 60px; }
+    section { padding: 70px 32px; }
     .hero-decoration { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .nav-links { gap: 14px; }
+    .nav-links a { font-size: 10px; letter-spacing: 1px; }
+    .nav-logo { font-size: 12px; letter-spacing: 2px; }
+    .hero { padding: 90px 20px 48px; }
+    section { padding: 52px 20px; }
+    .hero-decoration { display: none; }
+    .contact-inner { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  @media (max-width: 400px) {
+    .nav-links { gap: 10px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .hero-ctas { flex-direction: column; }
+    .btn-primary, .btn-ghost { text-align: center; }
   }
 
   .contact-desc {
@@ -434,6 +454,7 @@
     <li><a href="#projects">PROJECTS</a></li>
     <li><a href="#skills">SKILLS</a></li>
     <li><a href="#contact">CONTACT</a></li>
+    <li><a href="glyphlock.html" style="color:var(--accent2)">GLYPHLOCK ↗</a></li>
   </ul>
 </nav>
 
@@ -487,7 +508,7 @@
         <span class="tag">SECURITY</span>
         <span class="tag">JAVASCRIPT</span>
       </div>
-      <a href="https://github.com/CryptixByte/glyphLock-CPP" target="_blank" class="project-link">VIEW →</a>
+      <a href="glyphlock.html" class="project-link">VIEW →</a>
     </div>
 
     <div class="project-card">
@@ -524,6 +545,7 @@
   <div class="skills-grid">
     <div class="skill-item"><div class="skill-name">JavaScript / HTML / CSS</div><div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div></div>
     <div class="skill-item"><div class="skill-name">Network Security</div><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+    <div class="skill-item"><div class="skill-name">Cryptography</div><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
     <div class="skill-item"><div class="skill-name">Python</div><div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div></div>
     <div class="skill-item"><div class="skill-name">API Integration</div><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
     <div class="skill-item"><div class="skill-name">Linux / CLI</div><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
@@ -536,28 +558,18 @@
   <div class="contact-inner">
     <p class="contact-desc">
       Open to cybersecurity roles, freelance projects, and collaboration.<br><br>
-      AAS Cybersecurity · B.S. Computer Science in progress · Available immediately · Based in Willamette Valley, OR
+      AAS Cybersecurity · B.S. Computer Science in progress · Available immediately · Based in [YOUR CITY]
     </p>
     <div class="contact-links">
       <a href="https://github.com/CryptixByte" target="_blank" class="contact-link">
         <div><div class="contact-link-label">GITHUB</div><div class="contact-link-value">github.com/CryptixByte</div></div>
       </a>
-      <a href="mailto:mstearns.dev@gmail.com" class="contact-link">
-        <div><div class="contact-link-label">EMAIL</div><div class="contact-link-value">mstearns.dev@gmail.com</div></div>
+      <a href="/cdn-cgi/l/email-protection#93fee0e7f6f2e1fde0bdf7f6e5d3f4fef2faffbdf0fcfe" class="contact-link">
+        <div><div class="contact-link-label">EMAIL</div><div class="contact-link-value"><span class="__cf_email__" data-cfemail="f19c82859490839f82df959487b1969c90989ddf929e9c">[email&#160;protected]</span></div></div>
       </a>
       <a href="https://www.linkedin.com/in/marc-stearns-638b08311/" target="_blank" class="contact-link">
         <div><div class="contact-link-label">LINKEDIN</div><div class="contact-link-value">linkedin.com/in/marc-stearns-638b08311</div></div>
       </a>
     </div>
-  </div>
-</section>
-
-<footer>
-  <span>© 2026 Marc Stearns</span>
-  <span>CYBERSECURITY · DEVELOPER · BUILDER</span>
-</footer>
-
-</body>
-</html>
-
+  </d
 
