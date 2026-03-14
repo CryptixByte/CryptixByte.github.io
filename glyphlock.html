@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlyphLock — Marc Stearns</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oxanium:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020408;
+    --surface: #080d14;
+    --border: #0d2137;
+    --accent: #00f0ff;
+    --accent2: #ff3e6c;
+    --text: #c8e0f0;
+    --muted: #3a5570;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Oxanium', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 240, 255, 0.015) 2px,
+      rgba(0, 240, 255, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* Grid bg */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: rgba(2,4,8,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 160px 60px 80px;
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.1s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .project-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.2s;
+  }
+
+  .page-title {
+    font-size: clamp(52px, 9vw, 110px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 0.9;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.3s;
+  }
+
+  .page-title .t1 { color: var(--text); }
+  .page-title .t2 { color: var(--accent); }
+
+  .page-subtitle {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 560px;
+    margin-top: 24px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.45s;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards 0.55s;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+  }
+
+  .meta-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* MAIN CONTENT */
+  .content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* LIVE DEMO SECTION */
+  .demo-section {
+    padding: 80px 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-label::before { content: '// '; }
+
+  h2 {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 40px;
+    color: var(--text);
+  }
+  h2 span { color: var(--accent); }
+
+  /* Terminal UI */
+  .terminal {
+    background: #03080f;
+    border: 1px solid var(--border);
+    max-width: 720px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terminal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+
+  .terminal-bar {
+    background: #060e18;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .terminal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .dot-red { background: #ff3e6c; }
+  .dot-yellow { background: #f0c000; }
+  .dot-green { background: #00f0a0; }
+
+  .terminal-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-left: 8px;
+  }
+
+  .terminal-body {
+    padding: 32px;
+  }
+
+  .terminal-line {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .terminal-line .prompt { color: var(--accent2); }
+  .terminal-line .cmd { color: var(--accent); }
+  .terminal-line .comment { color: #254060; }
+
+  /* Input area */
+  .input-group {
+    margin-bottom: 24px;
+  }
+
+  .input-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .terminal-input {
+    width: 100%;
+    background: #020608;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .terminal-input:focus { border-color: var(--accent); }
+  .terminal-input::placeholder { color: var(--muted); }
+
+
+
+  /* Key selector */
+  .key-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .key-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+  }
+
+  .key-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .key-btn.active {
+    background: rgba(255,62,108,0.12);
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .key-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+
+
+  /* Output */
+  .output-box {
+    background: #020608;
+    border: 1px solid var(--border);
+    padding: 20px 16px;
+    min-height: 80px;
+    position: relative;
+  }
+
+  .output-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+
+  .output-text {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    word-break: break-all;
+    line-height: 1.8;
+    min-height: 24px;
+  }
+
+  .output-text.empty { color: var(--muted); font-size: 11px; }
+
+  .copy-btn {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* STATUS line */
+  .status-line {
+    margin-top: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .status-ok .status-dot { background: #00f0a0; box-shadow: 0 0 6px #00f0a0; }
+  .status-warn .status-dot { background: var(--accent2); }
+
+  /* HOW IT WORKS SECTION */
+  .how-section {
+    padding: 80px 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+    margin-top: 0;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .step-card:hover { border-color: var(--accent); }
+
+  .step-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.3s;
+  }
+
+  .step-card:hover::after { width: 100%; }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .step-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .step-desc {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* CODE SECTION */
+  .code-section {
+    padding: 80px 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .code-tab.active {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--accent);
+  }
+
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 32px;
+    overflow-x: auto;
+    display: none;
+  }
+
+  .code-block.active { display: block; }
+
+  pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+    white-space: pre;
+  }
+
+  .kw { color: var(--accent2); }
+  .fn { color: var(--accent); }
+  .str { color: #f0c070; }
+  .cm { color: #1e3d5a; }
+  .num { color: #a0d8a0; }
+  .var { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    padding: 32px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .cursor::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+    color: var(--accent);
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 32px; }
+    .page-header, .demo-section, .how-section, .code-section { padding: 60px 32px; }
+    .page-header { padding-top: 110px; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .terminal { max-width: 100%; }
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 10px; letter-spacing: 1px; }
+    .nav-logo { font-size: 12px; letter-spacing: 2px; }
+    .page-header { padding: 90px 20px 48px; }
+    .page-title { letter-spacing: -2px; }
+    .demo-section, .how-section, .code-section { padding: 48px 20px; }
+    .terminal-body { padding: 20px 16px; }
+    .terminal-title { display: none; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .header-meta { gap: 20px; }
+    .key-row { gap: 8px; }
+    .key-btn { padding: 5px 10px; font-size: 9px; }
+    pre { font-size: 11px; }
+    footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  @media (max-width: 400px) {
+    .nav-links { gap: 10px; }
+    .nav-links a { font-size: 9px; }
+    .terminal-body { padding: 16px 12px; }
+    .terminal-input { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Marc Stearns.exe</a>
+  <ul class="nav-links">
+      <li><a href="index.html" style="color:var(--accent2)">HOME ↗</a></li>
+    <li><a href="index.html#about">ABOUT</a></li>
+    <li><a href="index.html#projects">PROJECTS</a></li>
+    <li><a href="index.html#skills">SKILLS</a></li>
+    <li><a href="index.html#contact">CONTACT</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <a href="index.html#projects" class="back-link">← BACK TO PROJECTS</a>
+  <div class="project-tag">01 / SECURITY</div>
+  <h1 class="page-title">
+    <div class="t1">GLYPH</div>
+    <div class="t2">LOCK<span style="color:var(--accent2)">.</span></div>
+  </h1>
+  <p class="page-subtitle">
+    A substitution cipher encryption tool that maps every printable ASCII character to a unique glyph key. Built originally in C++, ported to JavaScript for the web<span class="cursor"></span>
+  </p>
+  <div class="header-meta">
+    <div class="meta-item">
+      <span class="meta-label">LANGUAGE</span>
+      <span class="meta-value">C++ / JavaScript</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">TYPE</span>
+      <span class="meta-value">Encryption Tool</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">SOURCE</span>
+      <span class="meta-value"><a href="https://github.com/CryptixByte/glyphLock-CPP" target="_blank" style="color:var(--accent);text-decoration:none;">github.com/CryptixByte</a></span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">STATUS</span>
+      <span class="meta-value" style="color:#00f0a0;">● LIVE</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- LIVE DEMO -->
+  <section class="demo-section">
+    <div class="section-label">LIVE DEMO</div>
+    <h2>TRY <span>GLYPHLOCK</span></h2>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot dot-red"></div>
+        <div class="terminal-dot dot-yellow"></div>
+        <div class="terminal-dot dot-green"></div>
+        <span class="terminal-title">glyphlock.exe — ENCRYPTION TERMINAL</span>
+      </div>
+      <div class="terminal-body">
+
+        <div class="terminal-line">
+          <span class="prompt">root@glyphlock</span><span style="color:var(--muted)">:</span><span class="cmd">~$</span>
+          <span style="color:var(--text);margin-left:8px;">./glyphlock --interactive</span>
+        </div>
+        <div class="terminal-line">
+          <span class="comment"># Welcome to GlyphLock v1.0 — substitution cipher encryption</span>
+        </div>
+
+        <!-- Key Set -->
+        <div class="input-group">
+          <span class="input-label">KEY PROFILE</span>
+          <div class="key-row">
+            <span class="key-label">SELECT:</span>
+            <button class="key-btn active" id="key-default" onclick="setKeyProfile('default')">DEFAULT</button>
+            <button class="key-btn" id="key-alpha" onclick="setKeyProfile('alpha')">ALPHA</button>
+            <button class="key-btn" id="key-hex" onclick="setKeyProfile('hex')">HEX</button>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-group">
+          <span class="input-label">PLAINTEXT INPUT</span>
+          <input
+            class="terminal-input"
+            id="userInput"
+            type="text"
+            placeholder="Enter text to encrypt..."
+            oninput="processInput()"
+          />
+        </div>
+
+        <!-- Output -->
+        <div class="output-box" id="outputBox">
+          <div class="output-label">OUTPUT</div>
+          <button class="copy-btn" onclick="copyOutput()">COPY</button>
+          <div class="output-text empty" id="outputText">// Awaiting input...</div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-line">
+          <span class="status-ok"><span class="status-dot"></span>CIPHER: ACTIVE</span>
+          <span id="charCount" style="color:var(--muted)">CHARS: 0</span>
+          <span id="keyStatus" style="color:var(--muted)">KEY: DEFAULT</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-label">BREAKDOWN</div>
+    <h2>HOW IT <span>WORKS</span></h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">ASCII Mapping</div>
+        <p class="step-desc">Every printable ASCII character (codes 32–126) maps to a unique key string. The 95-entry lookup table covers the full printable range.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">Substitution</div>
+        <p class="step-desc">Each character is replaced by its corresponding glyph key. The keys are delimited, making the output reversible with the same key table.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">Key Profiles</div>
+        <p class="step-desc">Three key profiles are available: Default (0X format), Alpha (codename strings), and Hex (pure hexadecimal). Swap keys to produce different cipher outputs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOURCE CODE -->
+  <section class="code-section">
+    <div class="section-label">SOURCE</div>
+    <h2>THE <span>CODE</span></h2>
+
+    <div class="code-tabs">
+      <button class="code-tab active" onclick="showTab('js')">JAVASCRIPT PORT</button>
+      <button class="code-tab" onclick="showTab('cpp')">ORIGINAL C++</button>
+    </div>
+
+    <div class="code-block active" id="tab-js">
+<pre><span class="cm">// GlyphLock.js — JavaScript port of GlyphLock.cpp</span>
+<span class="cm">// Marc Stearns · github.com/CryptixByte/glyphLock-CPP</span>
+
+<span class="kw">const</span> <span class="var">GlyphLock</span> = (<span class="kw">function</span>() {
+
+  <span class="kw">const</span> <span class="var">DEFAULT_KEYS</span> = [
+    <span class="str">"0X01"</span>, <span class="str">"0X02"</span>, <span class="str">"0X03"</span>, <span class="str">"0X04"</span>, <span class="str">"0X05"</span>, <span class="str">"0X06"</span>, <span class="str">"0X07"</span>, <span class="str">"0X08"</span>, <span class="str">"0X09"</span>, <span class="str">"0X10"</span>,
+    <span class="str">"0X11"</span>, <span class="str">"0X12"</span>, <span class="str">"0X13"</span>, <span class="str">"0X14"</span>, <span class="str">"0X15"</span>, <span class="str">"0X16"</span>, <span class="str">"0X17"</span>, <span class="str">"0X18"</span>, <span class="str">"0X19"</span>, <span class="str">"0X20"</span>,
+    <span class="str">"0X21"</span>, <span class="str">"0X22"</span>, <span class="str">"0X23"</span>, <span class="str">"0X24"</span>, <span class="str">"0X25"</span>, <span class="str">"0X26"</span>, <span class="str">"0X27"</span>, <span class="str">"0X28"</span>, <span class="str">"0X29"</span>, <span class="str">"0X30"</span>,
+    <span class="str">"0X31"</span>, <span class="str">"0X32"</span>, <span class="str">"0X33"</span>, <span class="str">"0X34"</span>, <span class="str">"0X35"</span>, <span class="str">"0X36"</span>, <span class="str">"0X37"</span>, <span class="str">"0X38"</span>, <span class="str">"0X39"</span>, <span class="str">"0X40"</span>,
+    <span class="str">"0X41"</span>, <span class="str">"0X42"</span>, <span class="str">"0X43"</span>, <span class="str">"0X44"</span>, <span class="str">"0X45"</span>, <span class="str">"0X46"</span>, <span class="str">"0X47"</span>, <span class="str">"0X48"</span>, <span class="str">"0X49"</span>, <span class="str">"0X50"</span>,
+    <span class="str">"0X51"</span>, <span class="str">"0X52"</span>, <span class="str">"0X53"</span>, <span class="str">"0X54"</span>, <span class="str">"0X55"</span>, <span class="str">"0X56"</span>, <span class="str">"0X57"</span>, <span class="str">"0X58"</span>, <span class="str">"0X59"</span>, <span class="str">"0X60"</span>,
+    <span class="str">"0X61"</span>, <span class="str">"0X62"</span>, <span class="str">"0X63"</span>, <span class="str">"0X64"</span>, <span class="str">"0X65"</span>, <span class="str">"0X66"</span>, <span class="str">"0X67"</span>, <span class="str">"0X68"</span>, <span class="str">"0X69"</span>, <span class="str">"0X70"</span>,
+    <span class="str">"0X71"</span>, <span class="str">"0X72"</span>, <span class="str">"0X73"</span>, <span class="str">"0X74"</span>, <span class="str">"0X75"</span>, <span class="str">"0X76"</span>, <span class="str">"0X77"</span>, <span class="str">"0X78"</span>, <span class="str">"0X79"</span>, <span class="str">"0X80"</span>,
+    <span class="str">"0X81"</span>, <span class="str">"0X82"</span>, <span class="str">"0X83"</span>, <span class="str">"0X84"</span>, <span class="str">"0X85"</span>, <span class="str">"0X86"</span>, <span class="str">"0X87"</span>, <span class="str">"0X88"</span>, <span class="str">"0X89"</span>, <span class="str">"0X90"</span>,
+    <span class="str">"0X91"</span>, <span class="str">"0X92"</span>, <span class="str">"0X93"</span>, <span class="str">"0X94"</span>, <span class="str">"0X95"</span>
+  ];
+
+  <span class="kw">const</span> <span class="var">ALPHA_KEYS</span> = [
+    <span class="str">'ALPHA'</span>, <span class="str">'BETA'</span>, <span class="str">'GAMMA'</span>, <span class="str">'DELTA'</span>, <span class="str">'EPSILON'</span>, <span class="str">'ZETA'</span>, <span class="str">'ETA'</span>, <span class="str">'THETA'</span>,
+    <span class="str">'IOTA'</span>, <span class="str">'KAPPA'</span>, <span class="str">'LAMBDA'</span>, <span class="str">'MU'</span>, <span class="str">'NU'</span>, <span class="str">'XI'</span>, <span class="str">'OMICRON'</span>, <span class="str">'PI'</span>, <span class="str">'RHO'</span>,
+    <span class="cm">// ... (95 entries total, ASCII 32–126)</span>
+  ];
+
+  <span class="kw">const</span> <span class="var">HEX_KEYS</span> = (() => {
+    <span class="kw">const</span> <span class="var">k</span> = [];
+    <span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> = <span class="num">0x20</span>; <span class="var">i</span> <= <span class="num">0x7E</span>; <span class="var">i</span>++)
+      <span class="var">k</span>.<span class="fn">push</span>(<span class="str">'\\x'</span> + <span class="var">i</span>.<span class="fn">toString</span>(<span class="num">16</span>).<span class="fn">toUpperCase</span>());
+    <span class="kw">return</span> <span class="var">k</span>;
+  })();
+
+  <span class="kw">const</span> <span class="var">KEY_PROFILES</span> = {
+    <span class="var">default</span>: <span class="var">DEFAULT_KEYS</span>,
+    <span class="var">alpha</span>:   <span class="var">ALPHA_KEYS</span>,
+    <span class="var">hex</span>:     <span class="var">HEX_KEYS</span>
+  };
+
+  <span class="kw">function</span> <span class="fn">glyphScramble</span>(<span class="var">text</span>, <span class="var">keys</span>) {
+    <span class="kw">let</span> <span class="var">glyphScrambled</span> = <span class="str">""</span>;
+    <span class="kw">for</span> (<span class="kw">const</span> <span class="var">letter</span> <span class="kw">of</span> <span class="var">text</span>) {
+      <span class="kw">const</span> <span class="var">code</span> = <span class="var">letter</span>.<span class="fn">charCodeAt</span>(<span class="num">0</span>);
+      <span class="kw">if</span> (<span class="var">code</span> >= <span class="num">32</span> && <span class="var">code</span> <= <span class="num">126</span>) {
+        <span class="var">glyphScrambled</span> += <span class="var">keys</span>[<span class="var">code</span> - <span class="num">32</span>];
+      } <span class="kw">else</span> {
+        <span class="var">glyphScrambled</span> += <span class="var">letter</span>;
+      }
+    }
+    <span class="kw">return</span> <span class="var">glyphScrambled</span>;
+  }
+
+  <span class="kw">return</span> { <span class="var">glyphScramble</span>, <span class="var">KEY_PROFILES</span> };
+
+})();
+</pre>
+    </div>
+
+    <div class="code-block" id="tab-cpp">
+<pre><span class="cm">// GlyphLock.cpp — Original C++ implementation</span>
+<span class="cm">// Marc Stearns · github.com/CryptixByte/glyphLock-CPP</span>
+
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;string&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;fstream&gt;</span>
+<span class="kw">using namespace</span> <span class="var">std</span>;
+
+<span class="cm">// 95-entry key table — maps ASCII 32–126</span>
+<span class="var">string</span> <span class="var">defaultGlyphKeys</span>[<span class="num">95</span>] = {
+  <span class="str">"0X01"</span>, <span class="str">"0X02"</span>, <span class="str">"0X03"</span>, <span class="str">"0X04"</span>, <span class="str">"0X05"</span> <span class="cm">/* ... */</span>
+};
+
+<span class="var">string</span> <span class="fn">glyphScramble</span>(<span class="var">string</span> <span class="var">userGlyph</span>) {
+  <span class="var">string</span> <span class="var">glyphScrambled</span> = <span class="str">""</span>;
+  <span class="kw">for</span> (<span class="var">char</span> <span class="var">letter</span> : <span class="var">userGlyph</span>) {
+    <span class="kw">if</span> (<span class="var">letter</span> >= <span class="num">32</span> && <span class="var">letter</span> <= <span class="num">126</span>) {
+      <span class="var">glyphScrambled</span> += <span class="var">defaultGlyphKeys</span>[<span class="var">letter</span> - <span class="num">32</span>];
+    } <span class="kw">else</span> {
+      <span class="var">glyphScrambled</span> += <span class="var">letter</span>;
+    }
+  }
+  <span class="kw">return</span> <span class="var">glyphScrambled</span>;
+}
+
+<span class="kw">void</span> <span class="fn">glyphLock</span>() {
+  <span class="var">string</span> <span class="var">userInput</span> = <span class="fn">glyphInput</span>();
+  <span class="var">string</span> <span class="var">glyph</span>     = <span class="fn">glyphScramble</span>(<span class="var">userInput</span>);
+  <span class="var">cout</span> << <span class="str">"Scrambled: "</span> << <span class="var">glyph</span> << <span class="var">endl</span>;
+
+  <span class="cm">// Optionally persist to glyph.txt</span>
+  <span class="var">ofstream</span> <span class="fn">output</span>(<span class="str">"glyph.txt"</span>, <span class="var">ios</span>::<span class="var">app</span>);
+  <span class="var">output</span> << <span class="var">glyph</span> << <span class="var">endl</span>;
+  <span class="var">output</span>.<span class="fn">close</span>();
+}
+</pre>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <span>© 2026 Marc Stearns</span>
+  <span>GLYPHLOCK · ENCRYPTION · C++ → JS</span>
+</footer>
+
+<script src="GlyphLock.js"></script>
+<script>
+  // ─── UI State ────────────────────────────────────────────────────
+  let currentProfile = 'default';
+
+  // ─── UI Handlers ─────────────────────────────────────────────────
+  function setKeyProfile(profile) {
+    currentProfile = profile;
+    ['default', 'alpha', 'hex'].forEach(p => {
+      document.getElementById('key-' + p).classList.toggle('active', p === profile);
+    });
+    document.getElementById('keyStatus').textContent = 'KEY: ' + profile.toUpperCase();
+    processInput();
+  }
+
+  function processInput() {
+    const input = document.getElementById('userInput').value;
+    document.getElementById('charCount').textContent = 'CHARS: ' + input.length;
+    if (!input) {
+      setOutput('// Awaiting input...', true);
+      return;
+    }
+    setOutput(GlyphLock.glyphScramble(input, GlyphLock.KEY_PROFILES[currentProfile]), false);
+  }
+
+  function setOutput(text, isEmpty) {
+    const el = document.getElementById('outputText');
+    el.textContent = text;
+    el.className = 'output-text' + (isEmpty ? ' empty' : '');
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('outputText').textContent;
+    if (!text || text.startsWith('//')) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'COPIED!';
+      setTimeout(() => btn.textContent = 'COPY', 1200);
+    });
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('.code-tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && name === 'js') || (i === 1 && name === 'cpp'));
+    });
+    document.getElementById('tab-js').classList.toggle('active', name === 'js');
+    document.getElementById('tab-cpp').classList.toggle('active', name === 'cpp');
+  }
+</script>
+</body>
+</html>
